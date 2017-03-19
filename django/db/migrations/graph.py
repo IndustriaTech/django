@@ -405,8 +405,12 @@ class MigrationGraph(object):
                         continue
                     plan.append(migration)
         project_state = ProjectState(real_apps=real_apps)
+        import time
         for node in plan:
+            mutate_state_start = time.time()
             project_state = self.nodes[node].mutate_state(project_state, preserve=False)
+            print('{duration:0.3f} sec. ({app}.{migration})'.format(
+                duration=time.time() - mutate_state_start, app=node[0], migration=node[1]))
         return project_state
 
     def __contains__(self, node):
